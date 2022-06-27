@@ -4,12 +4,7 @@ Created on Mon Jun 27 13:19:14 2022
 
 @author: juanj
 """
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 27 13:19:14 2022
 
-@author: juanj
-"""
 import altair as alt
 import pandas as pd
 import streamlit as st
