@@ -70,6 +70,7 @@ col3.metric("Inflacion acumulada", str(ic)+"%")
 
 
 #%%
+
 # Variacion anual
 periods = (2022-2016)*12 + 5
 rng = pd.date_range('1/1/2016', periods=periods, freq='M')
@@ -78,10 +79,11 @@ rng = pd.date_range('1/1/2016', periods=periods, freq='M')
 highlight = alt.selection(
     type='single', on='mouseover', fields=['mes'], nearest=True)
 
-df_anual = df_anual.reset_index()
+
 
 df_anual = df_anual.iloc[:periods]
 df_anual = df_anual.set_index(rng)
+df_anual = df_anual.reset_index()
 
 data_start = df_anual["index"].min()
 data_end = df_anual["index"].max()
@@ -92,6 +94,7 @@ date_range_slider = pn.widgets.DateRangeSlider(name="Date Range Slider",
                                                start=dt.datetime(data_start), end=dt.datetime(data_end),
                                                value=(dt.datetime(data_start), 
                                                      dt.datetime(data_end)))
+
 
 # create date filter using values from the range slider
 # store the first and last date range slider value in a var
