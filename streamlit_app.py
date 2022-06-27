@@ -4,10 +4,16 @@ Created on Mon Jun 27 13:19:14 2022
 
 @author: juanj
 """
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jun 27 13:19:14 2022
+
+@author: juanj
+"""
 import altair as alt
 import pandas as pd
 import streamlit as st
-
+import altair_viewer
 import plotly.express as px
 
 
@@ -71,11 +77,13 @@ df_anual = df_anual.reset_index()
 
 # Variacion anual
 
-char_var_anual = alt.Chart(df_anual).mark_line().encode(
-    x= alt.X("mes",  title="date"),
-    y = option
-    )
-# range slider
+char_var_anual = (alt.Chart(df_anual).
+                  mark_line().
+                  encode(x= alt.X("mes",title="date"),
+                         y = option,
+                         tooltip=["mes", alt.Tooltip(option, title="Variación anual")]).
+                         configure_axis(grid=False, domain=False))
+
 
 
 st.altair_chart(char_var_anual, use_container_width=True)
