@@ -70,9 +70,12 @@ df_anual = df_anual.reset_index()
 
 #%%
 
+
 # Variacion anual
 periods = (2022-2016)*12 + 5
 rng = pd.date_range('1/1/2016', periods=periods, freq='M')
+
+
 
 highlight = alt.selection(type='single', on='mouseover', fields=['mes'], nearest=True)
 df_anual = df_anual.reset_index()
@@ -80,7 +83,19 @@ df_anual = df_anual.reset_index()
 df_anual = df_anual.iloc[:periods]
 df_anual = df_anual.set_index(rng)
 
-anual_base = (alt.Chart(df_anual).
+df_anual["date2"] = pd.to_datetime(df_anual["index"]).dt.strftime("%Y-%m-%d")
+data_start = df_anual["index"].min()
+data_end = df_anual["index"].max()
+
+range_start = alt.binding(input="index")
+range_end = alt.binding(input="index")
+
+select_range_start = alt.selection_single(name="select_range_start", fields=["index"], bind=range_start, init={"index": data_start})
+select_range_end = alt.selection_single(name="select_range_end", fields=["index"], bind=range_end, init={"index": data_end})
+
+anual_base = (alt.Chart(df_anual).transform_filter((df_anual.date2 >= select_range_start.date) & 
+                                                   (df_anual.date2 <= select_range_end.date)).
+              add_selection(select_range_start, select_range_end).
               encode(x= alt.X('index:T',
                               axis = alt.Axis(title = 'Date'.upper(), 
                                               format = ("%b %Y"))),
@@ -90,10 +105,13 @@ char_var_anual = anual_base.mark_circle().encode(opacity=alt.value(0),
                                                  tooltip=["mes", alt.Tooltip(option, title="Variación anual")])
 
 lines = anual_base.mark_line().encode(
-    size=alt.condition(~highlight, alt.value(5), alt.value(7)))
+    size=alt.condition(~highlight, alt.value(5), alt.value(10)))
 
-graph= (char_var_anual + lines).configure_axis(grid=False, domain=False).add_selection(highlight).interactive()
-
+graph= ((char_var_anual + lines).
+        configure_axis(grid=False, domain=False).
+        properties(title=u'Inflación mensual de '+option).
+        configure_title(anchor='start').
+        add_selection(highlight).interactive())
 
 st.altair_chart(graph, use_container_width=True)
 
