@@ -92,7 +92,7 @@ data_end = df_anual["index"].max()
 range_start = alt.binding(input="index")
 range_end = alt.binding(input="index")
 select_range_start = alt.selection_single(name="select_range_start", fields=["index"], bind=range_start, init={"index": data_start})
-select_range_end = alt.selection_single(name="select_range_end", fields=[""], bind=range_end, init={"index": data_end})
+select_range_end = alt.selection_single(name="select_range_end", fields=["index"], bind=range_end, init={"index": data_end})
 
 
 anual_base = (alt.Chart(df_anual).
