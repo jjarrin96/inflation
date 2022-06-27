@@ -69,7 +69,6 @@ col3.metric("Inflacion acumulada", str(ic)+"%")
 
 
 #%%
-
 # Variacion anual
 periods = (2022-2016)*12 + 5
 rng = pd.date_range('1/1/2016', periods=periods, freq='M')
@@ -83,23 +82,26 @@ df_anual = df_anual.reset_index()
 df_anual = df_anual.iloc[:periods]
 df_anual = df_anual.set_index(rng)
 
-df_anual["date2"] = pd.to_datetime(df_anual["index"]).dt.strftime("%Y-%m-%d")
 data_start = df_anual["index"].min()
 data_end = df_anual["index"].max()
 
 
-
 # this creates the date range slider
-range_start = alt.binding(input="index")
-range_end = alt.binding(input="index")
-select_range_start = alt.selection_single(name="select_range_start", fields=["index"], bind=range_start, init={"index": data_start})
-select_range_end = alt.selection_single(name="select_range_end", fields=["index"], bind=range_end, init={"index": data_end})
+date_range_slider = pn.widgets.DateRangeSlider(name="Date Range Slider",
+                                               start=dt.datetime(data_start), end=dt.datetime(data_end),
+                                               value=(dt.datetime(data_start), 
+                                                     dt.datetime(data_end)))
 
+# create date filter using values from the range slider
+# store the first and last date range slider value in a var
+start_date = date_range_slider.value[0] 
+end_date = date_range_slider.value[1] 
+# create filter mask for the dataframe
+mask = (df_anual["index"] > start_date) & (df_anual["index"] <= end_date)
+df_anual = df_anual.loc[mask] # filter the dataframe
 
 
 anual_base = (alt.Chart(df_anual).
-              transform_filter((datum.date2 >= select_range_start.date) & (datum.date2 <= select_range_end.date)).
-              add_selection(select_range_start, select_range_end).
               encode(x= alt.X('index:T',
                               axis = alt.Axis(title = 'Date'.upper(), 
                                               format = ("%b %Y"))),
@@ -118,6 +120,7 @@ graph= ((char_var_anual + lines).
         add_selection(highlight).interactive())
 
 st.altair_chart(graph, use_container_width=True)
+
 
 s_ta = ""
 if df_anual.loc[df_anual.index[-1],option]>0:
