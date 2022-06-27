@@ -90,7 +90,7 @@ char_var_anual = anual_base.mark_circle().encode(opacity=alt.value(0),
                                                  tooltip=["mes", alt.Tooltip(option, title="Variación anual")])
 
 lines = anual_base.mark_line().encode(
-    size=alt.condition(~highlight, alt.value(1), alt.value(3)))
+    size=alt.condition(~highlight, alt.value(5), alt.value(10)))
 
 graph= (char_var_anual + lines).configure_axis(grid=False, domain=False).add_selection(highlight).interactive()
 
