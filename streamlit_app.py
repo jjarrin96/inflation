@@ -71,9 +71,12 @@ df_anual = df_anual.reset_index()
 #%%
 
 # Variacion anual
-
 periods = (2022-2016)*12 + 5
 rng = pd.date_range('1/1/2016', periods=periods, freq='M')
+
+highlight = alt.selection(
+    type='single', on='mouseover', fields=['mes'], nearest=True)
+df_anual = df_anual.reset_index()
 
 df_anual = df_anual.iloc[:periods]
 df_anual = df_anual.set_index(rng)
@@ -81,10 +84,11 @@ df_anual = df_anual.set_index(rng)
 
 char_var_anual = (alt.Chart(df_anual).
                   mark_line().
-                  encode(x= alt.X('index:T',axis = alt.Axis(format = ("%b %Y"))),
+                  encode(x= alt.X('index:T'),
                          y = option,
                          tooltip=["mes", alt.Tooltip(option, title="Variación anual")]).
                          configure_axis(grid=False, domain=False))
+
 
 
 
