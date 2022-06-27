@@ -73,16 +73,12 @@ df_anual = df_anual.reset_index()
 
 char_var_anual = alt.Chart(df_anual).mark_line().encode(
     x= alt.X("mes",  title="date"),
-    y = option,
-    size=alt.Size("stars"),
-    legend=alt.Legend(title="Github stars"),
-    color=alt.Color(
-        "lang", legend=alt.Legend(title="Language")),
-    tooltip=["name", "stars", "forks"])
+    y = option
+    )
 # range slider
 
 
-st.plotly_chart(char_var_anual, use_container_width=True)
+st.altair_chart(char_var_anual, use_container_width=True)
 
 s_ta = ""
 if df_anual.loc[df_anual.index[-1],option]>0:
