@@ -87,7 +87,7 @@ char_var_anual = (alt.Chart(df_anual).
                   encode(x= alt.X('index:T',axis = alt.Axis(title = 'Date'.upper(), format = ("%b %Y"))),
                          y = option,
                          tooltip=["mes", alt.Tooltip(option, title="Variación anual")]).
-                         configure_axis(grid=False, domain=False))
+                         configure_axis(grid=False, domain=False)).interactive()
 
 
 
