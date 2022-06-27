@@ -74,7 +74,13 @@ df_anual = df_anual.reset_index()
 periods = (2022-2016)*12 + 5
 rng = pd.date_range('1/1/2016', periods=periods, freq='M')
 
-highlight = alt.selection(
+# slider = alt.binding_range(min=0, max=100, step=1, name='cutoff:')
+selector = alt.selection_single(name="SelectorName", fields=['cutoff'],
+                                # bind=slider, init={'cutoff': 50})
+                                )
+
+
+highlight = alt.selection(selector,
     type='single', on='mouseover', fields=['mes'], nearest=True)
 df_anual = df_anual.reset_index()
 
@@ -94,6 +100,7 @@ lines = anual_base.mark_line().encode(
     size=alt.condition(~highlight, alt.value(1), alt.value(3)))
 
 graph= (char_var_anual + lines).configure_axis(grid=False, domain=False).add_selection(highlight).interactive()
+
 
 st.altair_chart(graph, use_container_width=True)
 
