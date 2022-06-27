@@ -2,4 +2,4 @@ plotly==5.8.2
 pandas
 altair
 requests
-pybadges
+datetime
