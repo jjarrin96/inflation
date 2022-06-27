@@ -7,7 +7,7 @@ Created on Mon Jun 27 13:19:14 2022
 import altair as alt
 import pandas as pd
 import streamlit as st
-#import altair_viewer
+
 import plotly.express as px
 
 
@@ -73,13 +73,13 @@ df_anual = df_anual.reset_index()
 
 char_var_anual = alt.Chart(df_anual).mark_line().encode(
     x= alt.X("mes",  title="date"),
-    y = option)
-
+    y = option,
+    size=alt.Size("stars"),
+    legend=alt.Legend(title="Github stars"),
+    color=alt.Color(
+        "lang", legend=alt.Legend(title="Language")),
+    tooltip=["name", "stars", "forks"])
 # range slider
-char_var_anual.update_layout(
-    xaxis=dict(
-        rangeslider=dict(visible=True)
-    ))
 
 
 st.plotly_chart(char_var_anual, use_container_width=True)
