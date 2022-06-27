@@ -73,7 +73,7 @@ df_anual = df_anual.reset_index()
 
 char_var_anual = alt.Chart(df_anual).mark_line().encode(
     x= alt.X("mes",  title="date"),
-    y = option).display()
+    y = option)
 
 # range slider
 char_var_anual.update_layout(
