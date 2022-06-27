@@ -74,14 +74,7 @@ df_anual = df_anual.reset_index()
 periods = (2022-2016)*12 + 5
 rng = pd.date_range('1/1/2016', periods=periods, freq='M')
 
-# slider = alt.binding_range(min=0, max=100, step=1, name='cutoff:')
-selector = alt.selection_single(name="SelectorName", fields=['cutoff'],
-                                # bind=slider, init={'cutoff': 50})
-                                )
-
-
-highlight = alt.selection(selector,
-    type='single', on='mouseover', fields=['mes'], nearest=True)
+highlight = alt.selection(type='single', on='mouseover', fields=['mes'], nearest=True)
 df_anual = df_anual.reset_index()
 
 df_anual = df_anual.iloc[:periods]
