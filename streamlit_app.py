@@ -4,13 +4,13 @@ Created on Mon Jun 27 13:19:14 2022
 
 @author: juanj
 """
-
 import altair as alt
 import pandas as pd
 import streamlit as st
-#import altair_viewer
 import plotly.express as px
-
+import datetime as dt
+import panel as pn
+from altair import datum
 
 #%% helper functions
 def fecha_str(date):
@@ -39,7 +39,7 @@ En esta página puedes monitorear la variación anual y mensual de los precios d
 # datos
 
 df_anual = pd.read_csv("https://raw.githubusercontent.com/EnexFG/inflation_tracker/main/InflacionAnual.csv")
-df_anual = df_anual.set_index('mes')
+# df_anual = df_anual.set_index('mes')
 
 df_mensual = pd.read_csv("https://raw.githubusercontent.com/EnexFG/inflation_tracker/main/InflacionMensual.csv")
 df_mensual = df_mensual.set_index('mes')
@@ -66,10 +66,9 @@ col1.metric("Inflacion anual", str(ia)+"%")
 col2.metric("Inflacion mensual", str(im)+"%")
 col3.metric("Inflacion acumulada", str(ic)+"%")
 
-df_anual = df_anual.reset_index()
+
 
 #%%
-
 
 # Variacion anual
 periods = (2022-2016)*12 + 5
@@ -78,6 +77,7 @@ rng = pd.date_range('1/1/2016', periods=periods, freq='M')
 
 
 highlight = alt.selection(type='single', on='mouseover', fields=['mes'], nearest=True)
+
 df_anual = df_anual.reset_index()
 
 df_anual = df_anual.iloc[:periods]
@@ -87,14 +87,16 @@ df_anual["date2"] = pd.to_datetime(df_anual["index"]).dt.strftime("%Y-%m-%d")
 data_start = df_anual["index"].min()
 data_end = df_anual["index"].max()
 
+
+# this creates the date range slider
 range_start = alt.binding(input="index")
 range_end = alt.binding(input="index")
-
 select_range_start = alt.selection_single(name="select_range_start", fields=["index"], bind=range_start, init={"index": data_start})
-select_range_end = alt.selection_single(name="select_range_end", fields=["index"], bind=range_end, init={"index": data_end})
+select_range_end = alt.selection_single(name="select_range_end", fields=[""], bind=range_end, init={"index": data_end})
 
-anual_base = (alt.Chart(df_anual).transform_filter((df_anual.date2 >= select_range_start.date) & 
-                                                   (df_anual.date2 <= select_range_end.date)).
+
+anual_base = (alt.Chart(df_anual).
+              transform_filter((datum.date2 >= select_range_start.date) & (datum.date2 <= select_range_end.date)).
               add_selection(select_range_start, select_range_end).
               encode(x= alt.X('index:T',
                               axis = alt.Axis(title = 'Date'.upper(), 
