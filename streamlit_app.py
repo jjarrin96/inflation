@@ -4,6 +4,7 @@ Created on Mon Jun 27 13:19:14 2022
 
 @author: juanj
 """
+
 import altair as alt
 import pandas as pd
 import streamlit as st
@@ -39,7 +40,7 @@ En esta página puedes monitorear la variación anual y mensual de los precios d
 # datos
 
 df_anual = pd.read_csv("https://raw.githubusercontent.com/EnexFG/inflation_tracker/main/InflacionAnual.csv")
-# df_anual = df_anual.set_index('mes')
+df_anual = df_anual.set_index('mes')
 
 df_mensual = pd.read_csv("https://raw.githubusercontent.com/EnexFG/inflation_tracker/main/InflacionMensual.csv")
 df_mensual = df_mensual.set_index('mes')
@@ -69,21 +70,22 @@ col3.metric("Inflacion acumulada", str(ic)+"%")
 
 
 #%%
+df_anual= df_anual.reset_index()
 # Variacion anual
 periods = (2022-2016)*12 + 5
 rng = pd.date_range('1/1/2016', periods=periods, freq='M')
 
 
-
-highlight = alt.selection(type='single', on='mouseover', fields=['mes'], nearest=True)
+highlight = alt.selection(
+    type='single', on='mouseover', fields=['mes'], nearest=True)
 
 df_anual = df_anual.reset_index()
 
 df_anual = df_anual.iloc[:periods]
 df_anual = df_anual.set_index(rng)
 
-data_start = df_anual["index"].min()
-data_end = df_anual["index"].max()
+data_start = df_anual["mes"].min()
+data_end = df_anual["mes"].max()
 
 
 # this creates the date range slider
@@ -120,7 +122,6 @@ graph= ((char_var_anual + lines).
         add_selection(highlight).interactive())
 
 st.altair_chart(graph, use_container_width=True)
-
 
 s_ta = ""
 if df_anual.loc[df_anual.index[-1],option]>0:
