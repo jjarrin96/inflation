@@ -7,7 +7,7 @@ Created on Mon Jun 27 13:19:14 2022
 import altair as alt
 import pandas as pd
 import streamlit as st
-import altair_viewer
+#import altair_viewer
 import plotly.express as px
 
 
