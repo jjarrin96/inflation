@@ -98,6 +98,9 @@ e_year = d_s_e.year
 e_day = d_s_e.day
 e_month = d_s_e.month
 
+rng = rng.map(lambda t: t.strftime('%b-%y'))
+
+df_anual["mes"] =  rng 
 
 # this creates the date range slider
 date_range_slider = pn.widgets.DateRangeSlider(name="Date Range Slider",
