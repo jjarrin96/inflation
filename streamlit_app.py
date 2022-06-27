@@ -70,7 +70,6 @@ col3.metric("Inflacion acumulada", str(ic)+"%")
 
 
 #%%
-
 # Variacion anual
 periods = (2022-2016)*12 + 5
 rng = pd.date_range('1/1/2016', periods=periods, freq='M')
@@ -88,13 +87,24 @@ df_anual = df_anual.reset_index()
 data_start = df_anual["index"].min()
 data_end = df_anual["index"].max()
 
+d_s_d = data_start.to_pydatetime()
+d_s_e = data_end.to_pydatetime()
+
+s_year = d_s_d.year
+s_day = d_s_d.day
+s_month = d_s_d.month
+
+e_year = d_s_e.year
+e_day = d_s_e.day
+e_month = d_s_e.month
+
 
 # this creates the date range slider
 date_range_slider = pn.widgets.DateRangeSlider(name="Date Range Slider",
-                                               start=dt.datetime(data_start), end=dt.datetime(data_end),
-                                               value=(dt.datetime(data_start), 
-                                                     dt.datetime(data_end)))
-
+                                               start=dt.datetime(s_year,s_month,s_day), 
+                                               end=dt.datetime(e_year,e_month,e_day),
+                                               value=(dt.datetime(s_year,s_month,s_day), 
+                                                     dt.datetime(e_year,e_month,e_day)))
 
 # create date filter using values from the range slider
 # store the first and last date range slider value in a var
@@ -103,6 +113,7 @@ end_date = date_range_slider.value[1]
 # create filter mask for the dataframe
 mask = (df_anual["index"] > start_date) & (df_anual["index"] <= end_date)
 df_anual = df_anual.loc[mask] # filter the dataframe
+
 
 
 anual_base = (alt.Chart(df_anual).
