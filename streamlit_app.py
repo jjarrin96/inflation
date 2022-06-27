@@ -81,18 +81,21 @@ df_anual = df_anual.reset_index()
 df_anual = df_anual.iloc[:periods]
 df_anual = df_anual.set_index(rng)
 
+anual_base = (alt.Chart(df_anual).
+              encode(x= alt.X('index:T',
+                              axis = alt.Axis(title = 'Date'.upper(), 
+                                              format = ("%b %Y"))),
+                     y = option))
 
-char_var_anual = (alt.Chart(df_anual).
-                  mark_line().
-                  encode(x= alt.X('index:T',axis = alt.Axis(title = 'Date'.upper(), format = ("%b %Y"))),
-                         y = option,
-                         tooltip=["mes", alt.Tooltip(option, title="Variación anual")]).
-                         configure_axis(grid=False, domain=False)).add_selection(highlight).interactive()
+char_var_anual = anual_base.mark_circle().encode(opacity=alt.value(0),
+                                                 tooltip=["mes", alt.Tooltip(option, title="Variación anual")])
 
+lines = anual_base.mark_line().encode(
+    size=alt.condition(~highlight, alt.value(1), alt.value(3)))
 
+graph= (char_var_anual + lines).configure_axis(grid=False, domain=False).add_selection(highlight).interactive()
 
-
-st.altair_chart(char_var_anual, use_container_width=True)
+st.altair_chart(graph, use_container_width=True)
 
 s_ta = ""
 if df_anual.loc[df_anual.index[-1],option]>0:
