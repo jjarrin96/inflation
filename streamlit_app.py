@@ -136,7 +136,8 @@ filter_year = (graph.add_selection(slider_selection).
 
 
 
-st.altair_chart(graph, use_container_width=True)
+
+st.altair_chart(filter_year, use_container_width=True)
 
 s_ta = ""
 if df_anual.loc[df_anual.index[-1],option]>0:
