@@ -76,9 +76,13 @@ col3.metric("Inflacion acumulada", str(ic)+"%")
 periods = (2022-2016)*12 + 5
 rng = pd.date_range('1/1/2016', periods=periods, freq='M')
 
-
 highlight = alt.selection(
     type='single', on='mouseover', fields=['mes'], nearest=True)
+df_anual = df_anual.iloc[:periods]
+df_anual = df_anual.set_index(rng)
+df_anual = df_anual.reset_index()
+
+
 
 data_start = df_anual["index"].min()
 data_end = df_anual["index"].max()
