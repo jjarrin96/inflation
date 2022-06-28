@@ -70,6 +70,8 @@ col3.metric("Inflacion acumulada", str(ic)+"%")
 
 
 #%%
+
+
 # Variacion anual
 periods = (2022-2016)*12 + 5
 rng = pd.date_range('1/1/2016', periods=periods, freq='M')
@@ -77,12 +79,6 @@ rng = pd.date_range('1/1/2016', periods=periods, freq='M')
 
 highlight = alt.selection(
     type='single', on='mouseover', fields=['mes'], nearest=True)
-
-
-
-df_anual = df_anual.iloc[:periods]
-df_anual = df_anual.set_index(rng)
-df_anual = df_anual.reset_index()
 
 data_start = df_anual["index"].min()
 data_end = df_anual["index"].max()
@@ -98,25 +94,11 @@ e_year = d_s_e.year
 e_day = d_s_e.day
 e_month = d_s_e.month
 
-rng = rng.map(lambda t: t.strftime('%b-%y'))
 
-df_anual["mes"] =  rng 
 
-# this creates the date range slider
-date_range_slider = pn.widgets.DateRangeSlider(name="Date Range Slider",
-                                               start=dt.datetime(s_year,s_month,s_day), 
-                                               end=dt.datetime(e_year,e_month,e_day),
-                                               value=(dt.datetime(s_year,s_month,s_day), 
-                                                     dt.datetime(e_year,e_month,e_day)))
-
-# create date filter using values from the range slider
-# store the first and last date range slider value in a var
-start_date = date_range_slider.value[0] 
-end_date = date_range_slider.value[1] 
-# create filter mask for the dataframe
-mask = (df_anual["index"] > start_date) & (df_anual["index"] <= end_date)
-df_anual = df_anual.loc[mask] # filter the dataframe
-
+df_anual = df_anual.iloc[:periods]
+df_anual = df_anual.set_index(rng)
+df_anual = df_anual.reset_index()
 
 
 anual_base = (alt.Chart(df_anual).
@@ -136,6 +118,17 @@ graph= ((char_var_anual + lines).
         properties(title=u'Inflación mensual de '+option).
         configure_title(anchor='start').
         add_selection(highlight).interactive())
+
+# A slider filter
+year_slider = alt.binding_range(d_s_d, d_s_e, step=1)
+slider_selection = alt.selection_single(bind=year_slider, fields=['index'], name="")
+
+
+filter_year = (graph.add_selection(slider_selection).
+               transform_filter(slider_selection).
+               properties(title="Slider Filtering"))
+
+
 
 st.altair_chart(graph, use_container_width=True)
 
