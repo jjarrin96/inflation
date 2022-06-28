@@ -82,6 +82,8 @@ df_anual = df_anual.iloc[:periods]
 df_anual = df_anual.set_index(rng)
 df_anual = df_anual.reset_index()
 
+start = 0
+end = len(rng)
 
 
 data_start = df_anual["index"].min()
@@ -124,7 +126,7 @@ graph= ((char_var_anual + lines).
         add_selection(highlight).interactive())
 
 # A slider filter
-year_slider = alt.binding_range(min=data_start, max=data_end, step=1)
+year_slider = alt.binding_range(min=start, max=end, step=1)
 slider_selection = alt.selection_single(bind=year_slider, fields=['index'], name="")
 
 
